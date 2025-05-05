@@ -7,7 +7,7 @@ const ProfileScreen = () => {
 
   const user = {
     name: 'Elif Nisa',
-    email: 'elif@example.comm',
+    email: 'elif@example.com',
     photo:
       'https://www.w3schools.com/w3images/avatar2.png',
   };
