@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,33 +9,69 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { firebase } from '../firebase/firebaseConfig'; // doğru yolu yaz
+import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 const GoalsScreen = () => {
   const [goalText, setGoalText] = useState('');
   const [goals, setGoals] = useState([]);
 
-  const addGoal = () => {
-    if (goalText.trim() === '') return;
-    const newGoal = {
-      id: Date.now().toString(),
-      text: goalText,
-      completed: false,
-    };
-    setGoals([...goals, newGoal]);
-    setGoalText('');
+  const db = getFirestore();
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  // Hedefleri Firestore'dan dinle
+  useEffect(() => {
+    if (!user) return;
+
+    const goalsRef = collection(db, 'users', user.uid, 'goals');
+
+    const unsubscribe = onSnapshot(goalsRef, snapshot => {
+      const fetchedGoals = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setGoals(fetchedGoals);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  // Hedef ekle
+  const addGoal = async () => {
+    if (!goalText.trim()) return;
+    try {
+      const goal = {
+        text: goalText,
+        completed: false,
+        createdAt: new Date(),
+      };
+      await addDoc(collection(db, 'users', user.uid, 'goals'), goal);
+      setGoalText('');
+    } catch (err) {
+      console.error('Hedef eklenirken hata:', err);
+    }
   };
 
-  const toggleComplete = (id) => {
-    setGoals(goals.map(goal => {
-      if (goal.id === id) {
-        return { ...goal, completed: !goal.completed };
-      }
-      return goal;
-    }));
+  // Tamamlandı/iptal et
+  const toggleComplete = async (id, currentStatus) => {
+    try {
+      const goalRef = doc(db, 'users', user.uid, 'goals', id);
+      await updateDoc(goalRef, { completed: !currentStatus });
+    } catch (err) {
+      console.error('Tamamlama güncellenemedi:', err);
+    }
   };
 
-  const deleteGoal = (id) => {
-    setGoals(goals.filter(goal => goal.id !== id));
+  // Hedef sil
+  const deleteGoal = async (id) => {
+    try {
+      const goalRef = doc(db, 'users', user.uid, 'goals', id);
+      await deleteDoc(goalRef);
+    } catch (err) {
+      console.error('Silme hatası:', err);
+    }
   };
 
   return (
@@ -55,7 +91,7 @@ const GoalsScreen = () => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.goalItem}>
-            <TouchableOpacity onPress={() => toggleComplete(item.id)}>
+            <TouchableOpacity onPress={() => toggleComplete(item.id, item.completed)}>
               <Ionicons
                 name={item.completed ? 'checkbox' : 'square-outline'}
                 size={24}

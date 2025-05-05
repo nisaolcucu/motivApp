@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Firebase Authentication importu
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Buraya giriş kontrolü eklenecek (Firebase vs.)
-    alert('Giriş başarılı (simülasyon)');
-    navigation.replace('MainTabs'); // Giriş sonrası ana sekmelere yönlendir
+    if (!email || !password) {
+      Alert.alert('Hata', 'Lütfen email ve şifre girin');
+      return;
+    }
+
+    const auth = getAuth(); // Auth nesnesini al
+    signInWithEmailAndPassword(auth, email, password) // Firebase ile giriş yap
+      .then((userCredential) => {
+        // Giriş başarılı olduğunda, kullanıcının bilgilerine erişebiliriz
+        const user = userCredential.user;
+        Alert.alert('Başarılı', `Hoş geldiniz, ${user.displayName || 'Kullanıcı'}!`);
+        navigation.replace('MainTabs'); // Başarılı giriş sonrası ana sekmelere yönlendir
+      })
+      .catch((error) => {
+        // Hata durumunda, kullanıcıyı bilgilendir
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        Alert.alert('Giriş Hatası', `Hata: ${errorMessage}`);
+      });
   };
 
   return (
@@ -20,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}

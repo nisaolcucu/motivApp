@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../firebase/firebaseConfig'; // auth'u config dosyasından al
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const [user, setUser] = useState(null);
 
-  const user = {
-    name: 'Elif Nisa',
-    email: 'elif@example.com',
-    photo:
-      'https://www.w3schools.com/w3images/avatar2.png',
-  };
+  useEffect(() => {
+    const currentUser = auth.currentUser;
+    if (currentUser) {
+      setUser({
+        name: currentUser.displayName || 'İsimsiz Kullanıcı',
+        email: currentUser.email,
+        photo: currentUser.photoURL || 'https://www.w3schools.com/w3images/avatar2.png',
+      });
+    }
+  }, []);
 
   const handleSettings = () => {
     Alert.alert('Ayarlar', 'Ayarlar sayfasına yönlendirilecek.');
@@ -18,16 +24,29 @@ const ProfileScreen = () => {
 
   const handleLogout = () => {
     Alert.alert('Çıkış', 'Hesaptan çıkış yapılacak.', [
-      {
-        text: 'İptal',
-        style: 'cancel',
-      },
+      { text: 'İptal', style: 'cancel' },
       {
         text: 'Tamam',
-        onPress: () => navigation.replace('Login'),
+        onPress: () => {
+          auth.signOut()
+            .then(() => {
+              navigation.replace('Login');
+            })
+            .catch((error) => {
+              Alert.alert('Hata', error.message);
+            });
+        },
       },
     ]);
   };
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text>Yükleniyor...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

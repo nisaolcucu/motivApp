@@ -1,14 +1,29 @@
+// RegisterScreen.js
+
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { auth } from '../firebase/firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    // Buraya kayıt işlemi eklenecek (Firebase vs.)
-    alert('Kayıt başarılı (simülasyon)');
-    navigation.replace('MainTabs'); // Kayıt sonrası ana sekmelere yönlendir
+    if (!email || !password) {
+      Alert.alert('Hata', 'Lütfen email ve şifre girin');
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Kayıt başarılı
+        Alert.alert('Başarılı', 'Kayıt başarılı');
+        navigation.replace('MainTabs');
+      })
+      .catch((error) => {
+        Alert.alert('Hata', error.message);
+      });
   };
 
   return (
@@ -20,6 +35,7 @@ const RegisterScreen = ({ navigation }) => {
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
