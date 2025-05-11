@@ -8,7 +8,7 @@ const LoginScreen = ({ navigation }) => {
 
   const handleLogin = () => {
     if (!email || !password) {
-      Alert.alert('Hata', 'Lütfen email ve şifre girin');
+      Alert.alert('Error', 'Please enter your email and password.');
       return;
     }
 
@@ -17,14 +17,14 @@ const LoginScreen = ({ navigation }) => {
       .then((userCredential) => {
         // Giriş başarılı olduğunda, kullanıcının bilgilerine erişebiliriz
         const user = userCredential.user;
-        Alert.alert('Başarılı', `Hoş geldiniz, ${user.displayName || 'Kullanıcı'}!`);
+        Alert.alert('Successful', `Welcome, ${user.displayName || 'User'}!`);
         navigation.replace('MainTabs'); // Başarılı giriş sonrası ana sekmelere yönlendir
       })
       .catch((error) => {
         // Hata durumunda, kullanıcıyı bilgilendir
         const errorCode = error.code;
         const errorMessage = error.message;
-        Alert.alert('Giriş Hatası', `Hata: ${errorMessage}`);
+        Alert.alert('Login Error', `Error: ${errorMessage}`);
       });
   };
 
@@ -41,14 +41,14 @@ const LoginScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Şifre"
+        placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Giriş Yap" onPress={handleLogin} />
+      <Button title="Log In" onPress={handleLogin} />
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.link}>Hesabın yok mu? Kayıt Ol</Text>
+        <Text style={styles.link}>Don't have an account? Sign Up</Text>
       </TouchableOpacity>
     </View>
   );
