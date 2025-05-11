@@ -79,13 +79,13 @@ const GoalsScreen = () => {
       <Text style={styles.title}>🎯 Yeni Hedef Ekle</Text>
       <TextInput
         style={styles.input}
-        placeholder="Hedefini yaz..."
+        placeholder="Write your goal..."
         value={goalText}
         onChangeText={setGoalText}
       />
-      <Button title="Hedefi Ekle" onPress={addGoal} />
+      <Button title="Add Goal" onPress={addGoal} />
 
-      <Text style={styles.title}>✅ Hedeflerim</Text>
+      <Text style={styles.title}>✅ My Goals</Text>
       <FlatList
         data={goals}
         keyExtractor={item => item.id}
