@@ -114,26 +114,26 @@ const HomeScreen = () => {
           <Text style={styles.quote}>{quote}</Text>
           <Button title="Yeni Söz" onPress={getRandomQuote} />
 
-          <Text style={styles.title}>📝 Bugünkü Notun</Text>
+          <Text style={styles.title}>📝 Note of the Day</Text>
           <TextInput
-            placeholder="Kendine bir not yaz..."
+            placeholder="Write yourself a note..."
             value={note}
             onChangeText={setNote}
             multiline
             style={styles.input}
           />
           <Button
-            title={editingNoteId ? 'Notu Güncelle' : 'Notu Kaydet'}
+            title={editingNoteId ? 'Update Note' : 'Save Note'}
             onPress={saveNoteToFirestore}
             color={editingNoteId ? '#f39c12' : undefined}
           />
 
-          <Text style={styles.title}>🗂 Kaydedilen Notlar</Text>
+          <Text style={styles.title}>🗂 Saved Notes</Text>
         </View>
       }
       ListFooterComponent={
         <View style={styles.videoContainer}>
-          <Text style={styles.title}>🎥 Bugünün Videosu</Text>
+          <Text style={styles.title}>🎥 Video of the Day</Text>
           <WebView
             source={{ uri: 'https://www.youtube.com/embed/ZXsQAXx_ao0' }}
             style={{ height: 200 }}
