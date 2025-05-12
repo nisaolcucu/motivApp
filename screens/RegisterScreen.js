@@ -28,7 +28,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Kayıt Ol</Text>
+      <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
