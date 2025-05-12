@@ -11,7 +11,7 @@ const ProfileScreen = () => {
     const currentUser = auth.currentUser;
     if (currentUser) {
       setUser({
-        name: currentUser.displayName || 'İsimsiz Kullanıcı',
+        name: currentUser.displayName || 'Anonymous User',
         email: currentUser.email,
         photo: currentUser.photoURL || 'https://www.w3schools.com/w3images/avatar2.png',
       });
