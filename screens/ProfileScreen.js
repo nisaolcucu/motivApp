@@ -23,10 +23,10 @@ const ProfileScreen = () => {
   };
 
   const handleLogout = () => {
-    Alert.alert('Çıkış', 'Hesaptan çıkış yapılacak.', [
+    Alert.alert('Log out', 'You will be logged out of the account.', [
       { text: 'İptal', style: 'cancel' },
       {
-        text: 'Tamam',
+        text: 'Done',
         onPress: () => {
           auth.signOut()
             .then(() => {
@@ -43,7 +43,7 @@ const ProfileScreen = () => {
   if (!user) {
     return (
       <View style={styles.container}>
-        <Text>Yükleniyor...</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
@@ -55,14 +55,14 @@ const ProfileScreen = () => {
       <Text style={styles.email}>{user.email}</Text>
 
       <TouchableOpacity style={styles.button} onPress={handleSettings}>
-        <Text style={styles.buttonText}>⚙️ Ayarlar</Text>
+        <Text style={styles.buttonText}>⚙️ Settings</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#f44336' }]}
         onPress={handleLogout}
       >
-        <Text style={styles.buttonText}>🚪 Çıkış Yap</Text>
+        <Text style={styles.buttonText}>🚪 Log Out</Text>
       </TouchableOpacity>
     </View>
   );
