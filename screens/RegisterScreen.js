@@ -11,18 +11,18 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = () => {
     if (!email || !password) {
-      Alert.alert('Hata', 'Lütfen email ve şifre girin');
+      Alert.alert('Error', 'Please enter your email and password.');
       return;
     }
 
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Kayıt başarılı
-        Alert.alert('Başarılı', 'Kayıt başarılı');
+        Alert.alert('Successful', 'Registration successful');
         navigation.replace('MainTabs');
       })
       .catch((error) => {
-        Alert.alert('Hata', error.message);
+        Alert.alert('Error', error.message);
       });
   };
 
@@ -39,14 +39,14 @@ const RegisterScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Şifre"
+        placeholder="Password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Kayıt Ol" onPress={handleRegister} />
+      <Button title="Register" onPress={handleRegister} />
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.link}>Zaten hesabın var mı? Giriş Yap</Text>
+        <Text style={styles.link}>Already have an account? Log In</Text>
       </TouchableOpacity>
     </View>
   );
