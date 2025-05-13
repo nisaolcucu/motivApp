@@ -112,7 +112,7 @@ const HomeScreen = () => {
         <View style={styles.container}>
           <Text style={styles.title}>📜 Günün Sözü</Text>
           <Text style={styles.quote}>{quote}</Text>
-          <Button title="Yeni Söz" onPress={getRandomQuote} />
+          <Button title="New quote" onPress={getRandomQuote} />
 
           <Text style={styles.title}>📝 Note of the Day</Text>
           <TextInput
