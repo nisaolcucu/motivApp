@@ -9,19 +9,36 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { firebase } from '../firebase/firebaseConfig'; // doğru yolu yaz
-import { getFirestore, collection, addDoc, onSnapshot, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { firebase } from '../firebase/firebaseConfig';
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  onSnapshot,
+  doc,
+  updateDoc,
+  deleteDoc
+} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-const GoalsScreen = () => {
+// 📌 Ana bileşen
+const MainScreen = () => {
+  return (
+    <GoalsScreen title="🚀 Hedeflerin" />
+  );
+};
+
+// 📌 Props alan GoalsScreen bileşeni
+const GoalsScreen = ({ title }) => {
   const [goalText, setGoalText] = useState('');
   const [goals, setGoals] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState('');
 
   const db = getFirestore();
   const auth = getAuth();
   const user = auth.currentUser;
 
-  // Hedefleri Firestore'dan dinle
   useEffect(() => {
     if (!user) return;
 
@@ -38,7 +55,6 @@ const GoalsScreen = () => {
     return () => unsubscribe();
   }, [user]);
 
-  // Hedef ekle
   const addGoal = async () => {
     if (!goalText.trim()) return;
     try {
@@ -54,7 +70,18 @@ const GoalsScreen = () => {
     }
   };
 
-  // Tamamlandı/iptal et
+  const updateGoal = async () => {
+    if (!editText.trim()) return;
+    try {
+      const goalRef = doc(db, 'users', user.uid, 'goals', editingId);
+      await updateDoc(goalRef, { text: editText });
+      setEditingId(null);
+      setEditText('');
+    } catch (err) {
+      console.error('Hedef güncellenemedi:', err);
+    }
+  };
+
   const toggleComplete = async (id, currentStatus) => {
     try {
       const goalRef = doc(db, 'users', user.uid, 'goals', id);
@@ -64,7 +91,6 @@ const GoalsScreen = () => {
     }
   };
 
-  // Hedef sil
   const deleteGoal = async (id) => {
     try {
       const goalRef = doc(db, 'users', user.uid, 'goals', id);
@@ -76,7 +102,7 @@ const GoalsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🎯 Yeni Hedef Ekle</Text>
+      <Text style={styles.title}>{title || '🎯 Yeni Hedef Ekle'}</Text>
       <TextInput
         style={styles.input}
         placeholder="Write your goal..."
@@ -100,9 +126,31 @@ const GoalsScreen = () => {
               />
             </TouchableOpacity>
 
-            <Text style={[styles.goalText, item.completed && styles.completed]}>
-              {item.text}
-            </Text>
+            {editingId === item.id ? (
+              <TextInput
+                style={[styles.input, { flex: 1, marginBottom: 0, marginRight: 8 }]}
+                value={editText}
+                onChangeText={setEditText}
+                autoFocus
+              />
+            ) : (
+              <Text style={[styles.goalText, item.completed && styles.completed]}>
+                {item.text}
+              </Text>
+            )}
+
+            {editingId === item.id ? (
+              <TouchableOpacity onPress={updateGoal}>
+                <Ionicons name="checkmark" size={24} color="green" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => {
+                setEditingId(item.id);
+                setEditText(item.text);
+              }}>
+                <Ionicons name="create-outline" size={20} color="#007AFF" style={{ marginRight: 10 }} />
+              </TouchableOpacity>
+            )}
 
             <TouchableOpacity onPress={() => deleteGoal(item.id)}>
               <Ionicons name="trash" size={20} color="red" />
@@ -151,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GoalsScreen;
+export default MainScreen;
