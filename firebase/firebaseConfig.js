@@ -6,13 +6,13 @@ import { getFirestore } from 'firebase/firestore';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCHHiNlMZm8pZXJMRJi_7cUIUIADS_kVow",
-  authDomain: "homework-7ca7b.firebaseapp.com",
-  projectId: "homework-7ca7b",
-  storageBucket: "homework-7ca7b.firebasestorage.app",
-  messagingSenderId: "929731973330",
-  appId: "1:929731973330:web:53b8aca794d018495e1d0b",
-  measurementId: "G-YKWM3JFL5P"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
