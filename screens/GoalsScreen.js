@@ -35,6 +35,7 @@ const GoalsScreen = ({ title }) => {
   const [editingId, setEditingId] = useState(null);
   const [editText, setEditText] = useState('');
 
+// 📌 Değişkenler
   const db = getFirestore();
   const auth = getAuth();
   const user = auth.currentUser;
